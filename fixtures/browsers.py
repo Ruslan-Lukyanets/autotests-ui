@@ -32,9 +32,6 @@ def initialize_browser_state(playwright: Playwright):
 @pytest.fixture
 def chromium_page_with_state(initialize_browser_state, playwright: Playwright):
         browser = playwright.chromium.launch(headless=False)
-        parent_dir = os.path.dirname(os.path.abspath(__file__))
-        root_dir = os.path.dirname(parent_dir)
-        storage_state_path = os.path.join(root_dir, "browser-state.json")
-        context = browser.new_context(storage_state=storage_state_path)
+        context = browser.new_context(storage_state="browser-state.json")
         yield context.new_page()
         browser.close()
