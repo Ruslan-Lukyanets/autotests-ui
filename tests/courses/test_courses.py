@@ -1,8 +1,8 @@
 import pytest
 from pathlib import Path
 
-from pages.courses_list_page import CoursesListPage
-from pages.create_course_page import CreateCoursePage
+from pages.courses.courses_list_page import CoursesListPage
+from pages.courses.create_course_page import CreateCoursePage
 
 
 @pytest.mark.courses
@@ -19,8 +19,9 @@ def test_create_course(courses_list_page: CoursesListPage, create_course_page: C
     create_course_page.create_course_exercises_toolbar_view.check_visible()
     create_course_page.check_visible_exercises_empty_view()
 
-    file_path = str(Path(__file__).resolve().parent.parent / "testdata" / "files" / "image.png")
+    file_path = str(Path(__file__).resolve().parent.parent.parent / "testdata" / "files" / "image.png")
     create_course_page.image_upload_widget.upload_preview_image(file_path)
+    #create_course_page.image_upload_widget.upload_preview_image("/testdata/files/image.png")
     create_course_page.image_upload_widget.check_visible(is_image_uploaded=True)
     create_course_page.create_course_form.fill(
         title="Playwright",

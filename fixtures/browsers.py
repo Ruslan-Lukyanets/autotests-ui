@@ -1,5 +1,9 @@
 import pytest
+import os
 from playwright.sync_api import Page, Playwright
+
+from pages.authentication.registration_page import RegistrationPage
+
 
 @pytest.fixture
 def chromium_page(playwright: Playwright) -> Page:
@@ -13,26 +17,24 @@ def initialize_browser_state(playwright: Playwright):
         context = browser.new_context()
         page = context.new_page()
 
+        registration_page = RegistrationPage(page=page)
+        registration_page.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration")
+        registration_page.registration_form.fill(email='user@gmail.com', username='username', password='password')
         page.goto("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/auth/registration")
+        registration_page.click_registration_button()
 
-        email_input = page.get_by_test_id('registration-form-email-input').locator('input')
-        email_input.fill('user@gmail.com')
-
-        username_input = page.get_by_test_id('registration-form-username-input').locator('input')
-        username_input.fill('username')
-
-        password_input = page.get_by_test_id('registration-form-password-input').locator('input')
-        password_input.fill('password')
-
-        registration_button = page.get_by_test_id('registration-page-registration-button')
-        registration_button.click()
-
-        context.storage_state(path="browser-state.json")
+        parent_dir = os.path.dirname(os.path.abspath(__file__))
+        root_dir = os.path.dirname(parent_dir)
+        storage_state_path = os.path.join(root_dir, "browser-state.json")
+        context.storage_state(path=storage_state_path)
         browser.close()
 
 @pytest.fixture
 def chromium_page_with_state(initialize_browser_state, playwright: Playwright):
         browser = playwright.chromium.launch(headless=False)
-        context = browser.new_context(storage_state="browser-state.json")
+        parent_dir = os.path.dirname(os.path.abspath(__file__))
+        root_dir = os.path.dirname(parent_dir)
+        storage_state_path = os.path.join(root_dir, "browser-state.json")
+        context = browser.new_context(storage_state=storage_state_path)
         yield context.new_page()
         browser.close()
