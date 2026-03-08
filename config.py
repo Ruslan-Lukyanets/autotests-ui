@@ -1,6 +1,6 @@
-# config.py
 from enum import Enum
 from typing import Self
+
 from pydantic import EmailStr, FilePath, HttpUrl, DirectoryPath, BaseModel
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -36,6 +36,9 @@ class Settings(BaseSettings):
     videos_dir: DirectoryPath
     tracing_dir: DirectoryPath
     browser_state_file: FilePath
+
+    def get_base_url(self) -> str:
+        return f"{self.app_url}/"
 
     @classmethod
     def initialize(cls) -> Self:

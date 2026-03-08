@@ -1,28 +1,32 @@
-import pytest
 import allure
-from pages.dashboard.dashboard_page import DashboardPage
-from tools.allure.tags import AllureTag
-from tools.allure.epics import AllureEpic
-from tools.allure.features import AllureFeatures
-from tools.allure.stories import AllureStories
+import pytest
 from allure_commons.types import Severity
+
+from config import settings
+from pages.dashboard.dashboard_page import DashboardPage
+from tools.allure.epics import AllureEpic
+from tools.allure.features import AllureFeature
+from tools.allure.stories import AllureStory
+from tools.allure.tags import AllureTag
+from tools.routes import AppRoute
+
 
 @pytest.mark.dashboard
 @pytest.mark.regression
 @allure.tag(AllureTag.REGRESSION, AllureTag.DASHBOARD)
 @allure.epic(AllureEpic.LMS)
-@allure.feature(AllureFeatures.DASHBOARD)
-@allure.story(AllureStories.DASHBOARD)
+@allure.feature(AllureFeature.DASHBOARD)
+@allure.story(AllureStory.DASHBOARD)
 @allure.parent_suite(AllureEpic.LMS)
-@allure.suite(AllureFeatures.DASHBOARD)
-@allure.sub_suite(AllureStories.DASHBOARD)
+@allure.suite(AllureFeature.DASHBOARD)
+@allure.sub_suite(AllureStory.DASHBOARD)
 class TestDashboard:
-    @allure.title('Check displaying of dashboard page')
+    @allure.title("Check displaying of dashboard page")
     @allure.severity(Severity.NORMAL)
     def test_dashboard_displaying(self, dashboard_page_with_state: DashboardPage):
-        dashboard_page_with_state.visit("https://nikita-filonov.github.io/qa-automation-engineer-ui-course/#/dashboard")
+        dashboard_page_with_state.visit(AppRoute.DASHBOARD)
 
-        dashboard_page_with_state.navbar.check_visible("username")
+        dashboard_page_with_state.navbar.check_visible(settings.test_user.username)
         dashboard_page_with_state.sidebar.check_visible()
 
         dashboard_page_with_state.dashboard_toolbar_view.check_visible()
